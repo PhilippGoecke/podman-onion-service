@@ -1,0 +1,14 @@
+FROM debian:bookworm-slim
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# install debian updates
+RUN apt update && apt upgrade -y \
+  && apt install -y --no-install-recommends nginx \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN echo "Hello Browser!" > /var/www/html/index.html
+
+RUN sed -i 's,80 default_server,8080 default_server,' /etc/nginx/sites-enabled/default
+
+CMD nginx -g 'daemon off;'
