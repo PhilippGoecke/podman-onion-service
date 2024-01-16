@@ -1,0 +1,21 @@
+FROM debian:bookworm-slim
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# install debian updates
+RUN apt update && apt upgrade -y \
+  && apt install -y --no-install-recommends tor \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV ONION_SERVICE_PATH='/var/lib/tor/onion_service'
+
+RUN mkdir $ONION_SERVICE_PATH \
+  && chown debian-tor:debian-tor $ONION_SERVICE_PATH \
+  && chmod 0700 $ONION_SERVICE_PATH \
+  && echo "HiddenServiceDir $ONION_SERVICE_PATH\nHiddenServicePort 80 127.0.0.1:8080" >> /etc/tor/torrc
+
+USER debian-tor
+
+ENV ONIONHOST="$ONION_SERVICE_PATH/hostname"
+
+CMD { while [ ! -f $ONIONHOST ]; do ls $ONION_SERVICE_PATH; sleep 1; done; echo -n "onion address is:"; cat $ONIONHOST; } & tor
