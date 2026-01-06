@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # install debian updates
 RUN apt update && apt upgrade -y \
-  && apt install -y --no-install-recommends nginx \
+  && apt install -y --no-install-recommends --no-install-suggests nginx \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /var/cache/apt/archives
 
