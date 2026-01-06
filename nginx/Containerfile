@@ -1,11 +1,12 @@
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 # install debian updates
 RUN apt update && apt upgrade -y \
   && apt install -y --no-install-recommends nginx \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /var/cache/apt/archives
 
 RUN echo "Hello Browser!" > /var/www/html/index.html
 
